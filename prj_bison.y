@@ -25,10 +25,16 @@ void showErro();
 %token <sval> STRING
 %token NEWLINE
 %token ERROR
-%token CRA_LS CRA_QUIT CRA_PS CRA_IFCONFIG CRA_TOUCH CRA_MKDIR CRA_RMDIR CRA_START CRA_KILL
+%token CRA_LS CRA_QUIT CRA_PS CRA_IFCONFIG CRA_TOUCH CRA_MKDIR CRA_RMDIR CRA_START CRA_KILL CRA_CLEAR
+%token CRA_PLUS CRA_MINUS CRA_MULTIPLY CRA_DIVIDE CRA_LEFT CRA_RIGHT
+%left CRA_PLUS CRA_MINUS
+%left CRA_MULTIPLY CRA_DIVIDE
+
 
 %start ini
 
+%type<ival> exp
+%type<fval> mixed_exp
 %type <sval> cmd
 
 %%
@@ -37,6 +43,14 @@ ini: 	NEWLINE {
 			showPath();
 		}
     | 	cmd NEWLINE {
+    		showPath();
+    	}
+    | 	exp NEWLINE {
+    		printf("Resposta: %d \n", $1);
+    		showPath();
+    	}
+    | 	mixed_exp NEWLINE {
+    		printf("Resposta: %f \n", $1);
     		showPath();
     	}
     | 	ERROR {
@@ -89,6 +103,33 @@ cmd:	CRA_LS {
 		   	system(cmd);
 			printf("Programa %d finalizado! \n", $2);
 		}
+	| 	CRA_CLEAR {
+			system("clear");
+		}
+;
+
+mixed_exp: FLOAT						{ $$ = $1; }
+	| mixed_exp CRA_PLUS mixed_exp		{ $$ = $1 + $3; }
+	| mixed_exp CRA_MINUS mixed_exp	 	{ $$ = $1 - $3; }
+	| mixed_exp CRA_MULTIPLY mixed_exp 	{ $$ = $1 * $3; }
+	| mixed_exp CRA_DIVIDE mixed_exp	{ $$ = $1 / $3; }
+	| CRA_LEFT mixed_exp CRA_RIGHT		{ $$ = $2; }
+	| exp CRA_PLUS mixed_exp	 	 	{ $$ = $1 + $3; }
+	| exp CRA_MINUS mixed_exp	 	 	{ $$ = $1 - $3; }
+	| exp CRA_MULTIPLY mixed_exp 	 	{ $$ = $1 * $3; }
+	| exp CRA_DIVIDE mixed_exp	 		{ $$ = $1 / $3; }
+	| mixed_exp CRA_PLUS exp	 	 	{ $$ = $1 + $3; }
+	| mixed_exp CRA_MINUS exp	 	 	{ $$ = $1 - $3; }
+	| mixed_exp CRA_MULTIPLY exp 	 	{ $$ = $1 * $3; }
+	| mixed_exp CRA_DIVIDE exp	 		{ $$ = $1 / $3; }
+	| exp CRA_DIVIDE exp		 		{ $$ = $1 / (float)$3; }
+;
+
+exp: INT								{ $$ = $1; }
+	| exp CRA_PLUS exp					{ $$ = $1 + $3; }
+	| exp CRA_MINUS exp					{ $$ = $1 - $3; }
+	| exp CRA_MULTIPLY exp				{ $$ = $1 * $3; }
+	| CRA_LEFT exp CRA_RIGHT			{ $$ = $2; }
 ;
 
 %%

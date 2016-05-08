@@ -8,6 +8,14 @@
 
 %%
 [ \t]       	 ;
+[0-9]+          {yylval.ival = atoi(yytext); return INT;}
+[0-9]+\.[0-9]+	{yylval.fval = atof(yytext); return FLOAT;}
+"+"				{return CRA_PLUS;}
+"-"				{return CRA_MINUS;}
+"*"				{return CRA_MULTIPLY;}
+"/"				{return CRA_DIVIDE;}
+"("				{return CRA_LEFT;}
+")"				{return CRA_RIGHT;}
 "ls" 			{return CRA_LS;}
 "quit" 			{return CRA_QUIT;}
 "ps" 			{return CRA_PS;}
@@ -17,9 +25,8 @@
 "rmdir"			{return CRA_RMDIR;}
 "start"			{return CRA_START;}
 "kill"			{return CRA_KILL;}
-\n 				{return NEWLINE;}
-[0-9]+          {yylval.ival = atoi(yytext); return INT;}
-[0-9]+\.[0-9]+	{yylval.fval = atof(yytext); return FLOAT;}
+"clear"			{return CRA_CLEAR;}
 [a-zA-Z0-9]+    {yylval.sval = strdup(yytext); return STRING;}
+\n 				{return NEWLINE;}
 .				{return ERROR;}
 %%
