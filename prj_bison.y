@@ -23,9 +23,10 @@ void showErro();
 %token <ival> INT
 %token <fval> FLOAT
 %token <sval> STRING
+%token <sval> CRA_BACK
 %token NEWLINE
 %token ERROR
-%token CRA_LS CRA_QUIT CRA_PS CRA_IFCONFIG CRA_TOUCH CRA_MKDIR CRA_RMDIR CRA_START CRA_KILL CRA_CLEAR
+%token CRA_LS CRA_QUIT CRA_PS CRA_IFCONFIG CRA_TOUCH CRA_MKDIR CRA_RMDIR CRA_START CRA_KILL CRA_CLEAR CRA_CD 
 %token CRA_PLUS CRA_MINUS CRA_MULTIPLY CRA_DIVIDE CRA_LEFT CRA_RIGHT
 %left CRA_PLUS CRA_MINUS
 %left CRA_MULTIPLY CRA_DIVIDE
@@ -105,6 +106,12 @@ cmd:	CRA_LS {
 		}
 	| 	CRA_CLEAR {
 			system("clear");
+		}
+	| 	CRA_CD CRA_BACK {
+			chdir($2);
+		}
+	| 	CRA_CD STRING{
+			chdir($2);
 		}
 ;
 

@@ -8,10 +8,10 @@
 
 %%
 [ \t]       	 ;
-[0-9]+          {yylval.ival = atoi(yytext); return INT;}
-[0-9]+\.[0-9]+	{yylval.fval = atof(yytext); return FLOAT;}
 "+"				{return CRA_PLUS;}
 "-"				{return CRA_MINUS;}
+[-]?[0-9]+          {yylval.ival = atoi(yytext); return INT;}
+[-]?[0-9]+\.[0-9]+	{yylval.fval = atof(yytext); return FLOAT;}
 "*"				{return CRA_MULTIPLY;}
 "/"				{return CRA_DIVIDE;}
 "("				{return CRA_LEFT;}
@@ -26,6 +26,8 @@
 "start"			{return CRA_START;}
 "kill"			{return CRA_KILL;}
 "clear"			{return CRA_CLEAR;}
+"cd"			{return CRA_CD;}
+".."			{yylval.sval = strdup(yytext); return CRA_BACK;}
 [a-zA-Z0-9]+    {yylval.sval = strdup(yytext); return STRING;}
 \n 				{return NEWLINE;}
 .				{return ERROR;}
